@@ -1,0 +1,122 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Pago",
+  "description": "Esquema de datos para un pago (puede ser parcial o total)",
+  "type": "object",
+  "required": [
+    "pago_id",
+    "folio_pago",
+    "orden_compra_id",
+    "obra_id",
+    "proveedor_id",
+    "monto_pago",
+    "fecha_programada",
+    "estado"
+  ],
+  "properties": {
+    "pago_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID único del pago"
+    },
+    "folio_pago": {
+      "type": "string",
+      "description": "Folio del pago (ej: PAG-227-001, PAG-227-001-P1 para parciales)",
+      "pattern": "^PAG-[0-9]{3}-[0-9]{3}(-P[0-9]+)?$"
+    },
+    "orden_compra_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID de la orden de compra asociada"
+    },
+    "obra_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID de la obra (denormalizado para consultas rápidas)"
+    },
+    "proveedor_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID del proveedor (denormalizado para consultas rápidas)"
+    },
+    "tipo_pago": {
+      "type": "string",
+      "enum": ["total", "parcial"],
+      "description": "Tipo de pago: total o parcial"
+    },
+    "numero_parcialidad": {
+      "type": ["integer", "null"],
+      "minimum": 1,
+      "description": "Número de parcialidad (si es pago parcial)"
+    },
+    "monto_pago": {
+      "type": "number",
+      "minimum": 0,
+      "exclusiveMinimum": true,
+      "description": "Monto de este pago"
+    },
+    "metodo_pago": {
+      "type": ["string", "null"],
+      "enum": ["transferencia", "cheque", "efectivo", null],
+      "description": "Método de pago utilizado"
+    },
+    "fecha_programada": {
+      "type": "string",
+      "format": "date",
+      "description": "Fecha programada para el pago (YYYY-MM-DD)"
+    },
+    "fecha_procesado": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Fecha y hora en que se procesó el pago"
+    },
+    "semana_fiscal": {
+      "type": ["integer", "null"],
+      "minimum": 1,
+      "maximum": 53,
+      "description": "Semana fiscal del año (1-53)"
+    },
+    "estado": {
+      "type": "string",
+      "enum": ["programado", "procesando", "completado", "cancelado"],
+      "description": "Estado actual del pago"
+    },
+    "referencia_bancaria": {
+      "type": ["string", "null"],
+      "description": "Referencia bancaria o número de cheque"
+    },
+    "comprobante_url": {
+      "type": ["string", "null"],
+      "format": "uri",
+      "description": "URL del comprobante de pago (PDF, imagen, etc.)"
+    },
+    "requiere_factura": {
+      "type": "boolean",
+      "default": true,
+      "description": "Si el pago requiere factura del proveedor"
+    },
+    "factura_recibida": {
+      "type": "boolean",
+      "default": false,
+      "description": "Si ya se recibió la factura"
+    },
+    "observaciones": {
+      "type": ["string", "null"],
+      "description": "Observaciones adicionales del pago"
+    },
+    "procesado_por": {
+      "type": ["string", "null"],
+      "description": "Usuario que procesó el pago"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Fecha de creación del registro"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Fecha de última actualización"
+    }
+  }
+}

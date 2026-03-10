@@ -1,0 +1,116 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MetricasObra",
+  "description": "Métricas financieras y de avance de una obra para el dashboard",
+  "type": "object",
+  "required": [
+    "obra_id",
+    "codigo_obra",
+    "nombre_obra",
+    "monto_contratado",
+    "monto_comprometido",
+    "monto_pagado",
+    "saldo_disponible",
+    "porcentaje_ejercido",
+    "avance_fisico_porcentaje"
+  ],
+  "properties": {
+    "obra_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID de la obra"
+    },
+    "codigo_obra": {
+      "type": "string",
+      "description": "Código corto de la obra"
+    },
+    "nombre_obra": {
+      "type": "string",
+      "description": "Nombre del proyecto"
+    },
+    "cliente": {
+      "type": "string",
+      "description": "Nombre del cliente"
+    },
+    "residente": {
+      "type": "string",
+      "description": "Residente responsable"
+    },
+    "estado": {
+      "type": "string",
+      "enum": ["activa", "suspendida", "terminada", "cancelada"],
+      "description": "Estado de la obra"
+    },
+    "monto_contratado": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Monto total del contrato (incluye aditivas/deductivas)"
+    },
+    "monto_comprometido": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Monto de órdenes de compra emitidas (no canceladas)"
+    },
+    "monto_pagado": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Monto ya pagado (pagos completados)"
+    },
+    "saldo_disponible": {
+      "type": "number",
+      "description": "Saldo disponible (contratado - comprometido)"
+    },
+    "porcentaje_ejercido": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Porcentaje ejercido (comprometido / contratado * 100)"
+    },
+    "avance_fisico_porcentaje": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Porcentaje de avance físico según estimaciones"
+    },
+    "total_estimaciones": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Total de estimaciones aprobadas"
+    },
+    "total_aditivas": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Total de aditivas aprobadas"
+    },
+    "total_deductivas": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Total de deductivas (positivo, se resta al contrato)"
+    },
+    "monto_original_contrato": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Monto original del contrato sin modificaciones"
+    },
+    "estado_financiero": {
+      "type": "string",
+      "enum": ["saludable", "advertencia", "critico"],
+      "description": "Estado financiero calculado según % ejercido"
+    },
+    "dias_transcurridos": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Días transcurridos desde el inicio"
+    },
+    "dias_restantes": {
+      "type": "integer",
+      "description": "Días restantes hasta la fecha programada de fin"
+    },
+    "porcentaje_tiempo_transcurrido": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Porcentaje de tiempo transcurrido"
+    }
+  }
+}

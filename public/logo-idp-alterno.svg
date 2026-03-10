@@ -1,0 +1,13 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fondo amarillo -->
+  <rect width="120" height="120" fill="#FDB913"/>
+  
+  <!-- Marco azul grueso -->
+  <rect x="8" y="8" width="104" height="104" fill="none" stroke="#003B7A" stroke-width="8"/>
+  
+  <!-- Texto IDP en azul -->
+  <text x="60" y="58" font-family="Arial, sans-serif" font-size="42" font-weight="900" fill="#003B7A" text-anchor="middle" dominant-baseline="middle">IDP</text>
+  
+  <!-- Texto CONSTRUCTORA en azul -->
+  <text x="60" y="82" font-family="Arial, sans-serif" font-size="10" font-weight="700" fill="#003B7A" text-anchor="middle" letter-spacing="0.5">CONSTRUCTORA</text>
+</svg>

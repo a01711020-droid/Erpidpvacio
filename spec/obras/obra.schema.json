@@ -1,0 +1,85 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Obra",
+  "description": "Esquema de datos para una obra/proyecto de construcción",
+  "type": "object",
+  "required": [
+    "obra_id",
+    "codigo_obra",
+    "nombre_obra",
+    "numero_contrato",
+    "cliente",
+    "residente",
+    "monto_contratado",
+    "fecha_inicio",
+    "fecha_fin_programada",
+    "estado"
+  ],
+  "properties": {
+    "obra_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID único de la obra"
+    },
+    "codigo_obra": {
+      "type": "string",
+      "description": "Código corto de la obra (ej: 227, 228)",
+      "pattern": "^[0-9]{3}$"
+    },
+    "nombre_obra": {
+      "type": "string",
+      "description": "Nombre del proyecto"
+    },
+    "numero_contrato": {
+      "type": "string",
+      "description": "Número de contrato oficial"
+    },
+    "cliente": {
+      "type": "string",
+      "description": "Nombre del cliente"
+    },
+    "residente": {
+      "type": "string",
+      "description": "Nombre del residente de obra"
+    },
+    "direccion": {
+      "type": ["string", "null"],
+      "description": "Dirección de la obra"
+    },
+    "monto_contratado": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Monto total del contrato"
+    },
+    "fecha_inicio": {
+      "type": "string",
+      "format": "date",
+      "description": "Fecha de inicio de obra (YYYY-MM-DD)"
+    },
+    "fecha_fin_programada": {
+      "type": "string",
+      "format": "date",
+      "description": "Fecha programada de término (YYYY-MM-DD)"
+    },
+    "plazo_dias": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Plazo de ejecución en días"
+    },
+    "estado": {
+      "type": "string",
+      "enum": ["activa", "suspendida", "terminada", "cancelada"],
+      "description": "Estado actual de la obra"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Fecha de creación del registro"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Fecha de última actualización"
+    }
+  }
+}

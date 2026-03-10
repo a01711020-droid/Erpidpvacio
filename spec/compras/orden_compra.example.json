@@ -1,0 +1,242 @@
+[
+  {
+    "orden_compra_id": "770e8400-e29b-41d4-a716-446655440001",
+    "folio": "227-A01GM-CEMEX",
+    "obra_id": "550e8400-e29b-41d4-a716-446655440001",
+    "proveedor_id": "660e8400-e29b-41d4-a716-446655440001",
+    "requisicion_id": null,
+    "fecha_emision": "2024-01-20",
+    "fecha_entrega": "2024-01-25",
+    "estado": "parcialmente_pagada",
+    "tipo_entrega": "en_obra",
+    "subtotal": 34550.00,
+    "descuento_porcentaje": 0,
+    "descuento_monto": 0.00,
+    "iva": 5528.00,
+    "total": 40078.00,
+    "monto_pagado": 20000.00,
+    "saldo_pendiente": 20078.00,
+    "observaciones": "Entrega en dos exhibiciones. Primera entrega 15 M3, segunda 15 M3",
+    "creado_por": "Ing. Gabriel Morales",
+    "items": [
+      {
+        "item_id": "880e8400-e29b-41d4-a716-446655440001",
+        "cantidad": 30,
+        "unidad": "M3",
+        "descripcion": "Concreto premezclado f'c=250 kg/cm2, revenimiento 14cm, TMA 3/4\", incluye aditivo",
+        "precio_unitario": 1150.00,
+        "total": 34500.00
+      },
+      {
+        "item_id": "880e8400-e29b-41d4-a716-446655440002",
+        "cantidad": 1,
+        "unidad": "VIAJE",
+        "descripcion": "Flete adicional por ubicación remota",
+        "precio_unitario": 50.00,
+        "total": 50.00
+      }
+    ],
+    "created_at": "2024-01-20T09:00:00Z",
+    "updated_at": "2024-01-25T14:30:00Z"
+  },
+  {
+    "orden_compra_id": "770e8400-e29b-41d4-a716-446655440002",
+    "folio": "227-A02GM-LEVINSON",
+    "obra_id": "550e8400-e29b-41d4-a716-446655440001",
+    "proveedor_id": "660e8400-e29b-41d4-a716-446655440002",
+    "requisicion_id": null,
+    "fecha_emision": "2024-01-22",
+    "fecha_entrega": "2024-01-28",
+    "estado": "emitida",
+    "tipo_entrega": "en_obra",
+    "subtotal": 25000.00,
+    "descuento_porcentaje": 5,
+    "descuento_monto": 1250.00,
+    "iva": 3800.00,
+    "total": 27550.00,
+    "monto_pagado": 0.00,
+    "saldo_pendiente": 27550.00,
+    "observaciones": "Descuento por pronto pago si se liquida antes del 30 de enero",
+    "creado_por": "Ing. Gabriel Morales",
+    "items": [
+      {
+        "item_id": "880e8400-e29b-41d4-a716-446655440003",
+        "cantidad": 2000,
+        "unidad": "KG",
+        "descripcion": "Varilla corrugada #4 (1/2\") grado 42, 6m de longitud",
+        "precio_unitario": 10.50,
+        "total": 21000.00
+      },
+      {
+        "item_id": "880e8400-e29b-41d4-a716-446655440004",
+        "cantidad": 1000,
+        "unidad": "KG",
+        "descripcion": "Alambrón para amarre calibre 16",
+        "precio_unitario": 4.00,
+        "total": 4000.00
+      }
+    ],
+    "created_at": "2024-01-22T10:30:00Z",
+    "updated_at": "2024-01-22T10:30:00Z"
+  },
+  {
+    "orden_compra_id": "770e8400-e29b-41d4-a716-446655440003",
+    "folio": "228-A01LS-HOME DEPOT",
+    "obra_id": "550e8400-e29b-41d4-a716-446655440002",
+    "proveedor_id": "660e8400-e29b-41d4-a716-446655440003",
+    "requisicion_id": null,
+    "fecha_emision": "2024-02-05",
+    "fecha_entrega": "2024-02-07",
+    "estado": "pagada",
+    "tipo_entrega": "recoger",
+    "subtotal": 8500.00,
+    "descuento_porcentaje": 0,
+    "descuento_monto": 0.00,
+    "iva": 1360.00,
+    "total": 9860.00,
+    "monto_pagado": 9860.00,
+    "saldo_pendiente": 0.00,
+    "observaciones": "Pago de contado. Recoger en sucursal Toluca.",
+    "creado_por": "Ing. Laura Sánchez",
+    "items": [
+      {
+        "item_id": "880e8400-e29b-41d4-a716-446655440005",
+        "cantidad": 50,
+        "unidad": "BULTO",
+        "descripcion": "Cemento gris CPC 30R 50kg",
+        "precio_unitario": 150.00,
+        "total": 7500.00
+      },
+      {
+        "item_id": "880e8400-e29b-41d4-a716-446655440006",
+        "cantidad": 100,
+        "unidad": "PZA",
+        "descripcion": "Block hueco 15x20x40cm",
+        "precio_unitario": 10.00,
+        "total": 1000.00
+      }
+    ],
+    "created_at": "2024-02-05T08:00:00Z",
+    "updated_at": "2024-02-07T16:00:00Z"
+  },
+  {
+    "orden_compra_id": "770e8400-e29b-41d4-a716-446655440004",
+    "folio": "229-A01RG-INTERCERAMIC",
+    "obra_id": "550e8400-e29b-41d4-a716-446655440003",
+    "proveedor_id": "660e8400-e29b-41d4-a716-446655440004",
+    "requisicion_id": null,
+    "fecha_emision": "2024-03-10",
+    "fecha_entrega": "2024-03-20",
+    "estado": "emitida",
+    "tipo_entrega": "en_obra",
+    "subtotal": 45000.00,
+    "descuento_porcentaje": 10,
+    "descuento_monto": 4500.00,
+    "iva": 6480.00,
+    "total": 46980.00,
+    "monto_pagado": 0.00,
+    "saldo_pendiente": 46980.00,
+    "observaciones": "Descuento por volumen. Incluye instalación.",
+    "creado_por": "Ing. Roberto García",
+    "items": [
+      {
+        "item_id": "880e8400-e29b-41d4-a716-446655440007",
+        "cantidad": 150,
+        "unidad": "M2",
+        "descripcion": "Piso cerámico Travertino Beige 45x45cm, 1ra calidad",
+        "precio_unitario": 250.00,
+        "total": 37500.00
+      },
+      {
+        "item_id": "880e8400-e29b-41d4-a716-446655440008",
+        "cantidad": 50,
+        "unidad": "BULTO",
+        "descripcion": "Adhesivo para cerámica tipo Pego de 20kg",
+        "precio_unitario": 150.00,
+        "total": 7500.00
+      }
+    ],
+    "created_at": "2024-03-10T11:00:00Z",
+    "updated_at": "2024-03-10T11:00:00Z"
+  },
+  {
+    "orden_compra_id": "770e8400-e29b-41d4-a716-446655440005",
+    "folio": "231-A01PR-BEREL",
+    "obra_id": "550e8400-e29b-41d4-a716-446655440004",
+    "proveedor_id": "660e8400-e29b-41d4-a716-446655440005",
+    "requisicion_id": null,
+    "fecha_emision": "2024-04-18",
+    "fecha_entrega": "2024-04-22",
+    "estado": "borrador",
+    "tipo_entrega": "bodega",
+    "subtotal": 12000.00,
+    "descuento_porcentaje": 0,
+    "descuento_monto": 0.00,
+    "iva": 1920.00,
+    "total": 13920.00,
+    "monto_pagado": 0.00,
+    "saldo_pendiente": 13920.00,
+    "observaciones": "Pendiente de autorización de dirección",
+    "creado_por": "Ing. Patricia Ramírez",
+    "items": [
+      {
+        "item_id": "880e8400-e29b-41d4-a716-446655440009",
+        "cantidad": 80,
+        "unidad": "CUBETA",
+        "descripcion": "Pintura vinílica blanca lavable 19 litros",
+        "precio_unitario": 120.00,
+        "total": 9600.00
+      },
+      {
+        "item_id": "880e8400-e29b-41d4-a716-446655440010",
+        "cantidad": 40,
+        "unidad": "CUBETA",
+        "descripcion": "Sellador acrílico para muros 19 litros",
+        "precio_unitario": 60.00,
+        "total": 2400.00
+      }
+    ],
+    "created_at": "2024-04-18T09:00:00Z",
+    "updated_at": "2024-04-18T09:00:00Z"
+  },
+  {
+    "orden_compra_id": "770e8400-e29b-41d4-a716-446655440006",
+    "folio": "232-A01CM-HIERROS SA",
+    "obra_id": "550e8400-e29b-41d4-a716-446655440005",
+    "proveedor_id": "660e8400-e29b-41d4-a716-446655440006",
+    "requisicion_id": null,
+    "fecha_emision": "2024-05-05",
+    "fecha_entrega": "2024-05-12",
+    "estado": "emitida",
+    "tipo_entrega": "en_obra",
+    "subtotal": 52000.00,
+    "descuento_porcentaje": 3,
+    "descuento_monto": 1560.00,
+    "iva": 8070.40,
+    "total": 58510.40,
+    "monto_pagado": 0.00,
+    "saldo_pendiente": 58510.40,
+    "observaciones": "Material certificado. Incluye certificados de calidad.",
+    "creado_por": "Ing. Carlos Mendoza",
+    "items": [
+      {
+        "item_id": "880e8400-e29b-41d4-a716-446655440011",
+        "cantidad": 3000,
+        "unidad": "KG",
+        "descripcion": "Varilla corrugada #5 (5/8\") grado 60, 12m de longitud",
+        "precio_unitario": 15.00,
+        "total": 45000.00
+      },
+      {
+        "item_id": "880e8400-e29b-41d4-a716-446655440012",
+        "cantidad": 500,
+        "unidad": "KG",
+        "descripcion": "Malla electrosoldada 6x6-10/10",
+        "precio_unitario": 14.00,
+        "total": 7000.00
+      }
+    ],
+    "created_at": "2024-05-05T10:00:00Z",
+    "updated_at": "2024-05-05T10:00:00Z"
+  }
+]

@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Proveedor",
+  "description": "Esquema de datos para un proveedor",
+  "type": "object",
+  "required": [
+    "proveedor_id",
+    "razon_social",
+    "rfc"
+  ],
+  "properties": {
+    "proveedor_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID único del proveedor"
+    },
+    "nombre_comercial": {
+      "type": "string",
+      "description": "Nombre comercial corto (ej: CEMEX, LEVINSON)"
+    },
+    "razon_social": {
+      "type": "string",
+      "description": "Razón social completa"
+    },
+    "rfc": {
+      "type": "string",
+      "description": "RFC del proveedor (13 caracteres)",
+      "pattern": "^[A-Z&Ñ]{3,4}[0-9]{6}[A-Z0-9]{3}$"
+    },
+    "direccion": {
+      "type": ["string", "null"],
+      "description": "Dirección fiscal"
+    },
+    "ciudad": {
+      "type": ["string", "null"],
+      "description": "Ciudad"
+    },
+    "codigo_postal": {
+      "type": ["string", "null"],
+      "description": "Código postal"
+    },
+    "telefono": {
+      "type": ["string", "null"],
+      "description": "Teléfono de contacto"
+    },
+    "email": {
+      "type": ["string", "null"],
+      "format": "email",
+      "description": "Email de contacto"
+    },
+    "contacto_principal": {
+      "type": ["string", "null"],
+      "description": "Nombre del contacto principal"
+    },
+    "banco": {
+      "type": ["string", "null"],
+      "description": "Banco para transferencias"
+    },
+    "numero_cuenta": {
+      "type": ["string", "null"],
+      "description": "Número de cuenta bancaria"
+    },
+    "clabe": {
+      "type": ["string", "null"],
+      "description": "CLABE interbancaria",
+      "pattern": "^[0-9]{18}$"
+    },
+    "tipo_proveedor": {
+      "type": ["string", "null"],
+      "enum": ["material", "servicio", "renta", "mixto", null],
+      "description": "Tipo de proveedor"
+    },
+    "dias_credito": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0,
+      "description": "Días de crédito otorgados"
+    },
+    "limite_credito": {
+      "type": "number",
+      "minimum": 0,
+      "default": 0,
+      "description": "Límite de crédito"
+    },
+    "activo": {
+      "type": "boolean",
+      "default": true,
+      "description": "Si el proveedor está activo"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Fecha de creación del registro"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Fecha de última actualización"
+    }
+  }
+}
