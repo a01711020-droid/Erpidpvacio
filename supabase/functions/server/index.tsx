@@ -545,4 +545,59 @@ app.delete("/make-server-4298db9c/api/requisiciones/:id", async (c) => {
   }
 });
 
+// ==================== RESUMEN DESTAJOS ====================
+
+app.get("/make-server-4298db9c/api/resumen-destajos/semanas", async (c) => {
+  try {
+    const avances = await kv.getByPrefix("avance:");
+    const semanas = Array.from(
+      new Set(
+        avances
+          .filter((a: any) => Number.isInteger(a.año) && Number.isInteger(a.semana))
+          .map((a: any) => `${a.año}-S${String(a.semana).padStart(2, "0")}`),
+      ),
+    ).sort();
+
+    return c.json(semanas);
+  } catch (error) {
+    console.error("Error al obtener semanas de resumen de destajos:", error);
+    return c.json({ error: "Error al obtener semanas de resumen de destajos" }, 500);
+  }
+});
+
+app.get("/make-server-4298db9c/api/resumen-destajos/:weekKey", async (c) => {
+  try {
+    const weekKey = c.req.param("weekKey");
+    const [yearPart, weekPart] = weekKey.split("-S");
+    const year = Number.parseInt(yearPart, 10);
+    const week = Number.parseInt(weekPart, 10);
+
+    if (!Number.isInteger(year) || !Number.isInteger(week)) {
+      return c.json({ error: "Formato de semana inválido. Usa YYYY-SWW" }, 400);
+    }
+
+    const avances = await kv.getByPrefix("avance:");
+    const avancesSemana = avances.filter((a: any) => a.año === year && a.semana === week);
+
+    const resumenMap = new Map<string, { inicial: string; destajista: string; totalImporte: number }>();
+
+    for (const avance of avancesSemana as any[]) {
+      const inicial = avance.iniciales || avance.inicial || "N/A";
+      const destajista = avance.destajista_nombre || avance.destajista || avance.nombre || "Sin nombre";
+      const importeRaw = avance.importe_total ?? avance.importe ?? avance.total ?? 0;
+      const importe = Number.parseFloat(String(importeRaw));
+      const key = `${inicial}__${destajista}`;
+
+      const prev = resumenMap.get(key);
+      const acumulado = (prev?.totalImporte || 0) + (Number.isNaN(importe) ? 0 : importe);
+      resumenMap.set(key, { inicial, destajista, totalImporte: acumulado });
+    }
+
+    return c.json(Array.from(resumenMap.values()));
+  } catch (error) {
+    console.error("Error al obtener resumen semanal de destajos:", error);
+    return c.json({ error: "Error al obtener resumen semanal de destajos" }, 500);
+  }
+});
+
 Deno.serve(app.fetch);
