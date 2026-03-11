@@ -2377,7 +2377,7 @@ export default function Destajos({
       }}
     >
       {/* Header */}
-      <div className="bg-gradient-to-r from-teal-800 via-teal-700 to-teal-800 border-b-4 border-teal-600 shadow-xl">
+      <div className="bg-gradient-to-r from-amber-800 via-amber-700 to-amber-800 border-b-4 border-amber-600 shadow-xl">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -2396,7 +2396,7 @@ export default function Destajos({
                 <h1 className="text-3xl font-bold text-white">
                   Control de Destajos
                 </h1>
-                <p className="text-teal-100 text-lg">
+                <p className="text-amber-100 text-lg">
                   Gestión de destajos por obra y captura semanal de avances
                 </p>
               </div>
@@ -2404,14 +2404,14 @@ export default function Destajos({
             <div className="flex gap-3">
               <Button
                 onClick={() => setCurrentView("resumen")}
-                className="bg-white text-teal-800 hover:bg-teal-50"
+                className="bg-white text-amber-800 hover:bg-amber-50"
               >
                 <FileSpreadsheet className="h-4 w-4 mr-2" />
                 Resumen General
               </Button>
               <Button
                 onClick={onManageDestajistas}
-                className="bg-white text-teal-800 hover:bg-teal-50"
+                className="bg-white text-amber-800 hover:bg-amber-50"
               >
                 <Users className="h-4 w-4 mr-2" />
                 Gestionar Destajistas
@@ -2446,8 +2446,8 @@ export default function Destajos({
                         </h3>
                         <p className="text-sm text-gray-600">{obra.codigo}</p>
                       </div>
-                      <div className="p-2 bg-teal-100 rounded-lg">
-                        <Home className="h-5 w-5 text-teal-700" />
+                      <div className="p-2 bg-amber-100 rounded-lg">
+                        <Home className="h-5 w-5 text-amber-700" />
                       </div>
                     </div>
 

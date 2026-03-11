@@ -3,7 +3,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { X } from "lucide-react";
-import { obrasApi } from "@/app/utils/api";
+import { obrasEndpoint } from "@/app/utils/mockApiService";
 
 export interface Work {
   code: string;
@@ -73,30 +73,31 @@ export function WorkForm({ onClose, onSave, onSuccess, editWork }: WorkFormProps
       return;
     }
 
-    // Si no, guardar en API
+    // Guardar en mock API service
     setLoading(true);
     setError("");
 
     try {
-      const obraData = {
-        codigo_obra: code,
-        nombre_obra: name,
-        cliente: client,
-        direccion: "", // No está en el form anterior pero lo dejamos vacío
-        residente: resident,
-        fecha_inicio: startDate,
-        fecha_fin_estimada: estimatedEndDate,
-        presupuesto_total: contractAmount,
-        estado: "activa",
-      };
+      const result = await obrasEndpoint.create({
+        code,
+        name,
+        client,
+        contractAmount,
+        advancePercentage,
+        retentionPercentage,
+        startDate,
+        estimatedEndDate,
+        resident,
+        residentInitials,
+        contractNumber,
+        status: "Activa",
+      });
 
-      const response = await obrasApi.create(obraData);
-
-      if (response.success) {
+      if (result.success) {
         if (onSuccess) onSuccess();
         onClose();
       } else {
-        setError(response.error || "Error al crear la obra");
+        setError(result.error || "Error al crear la obra");
         setLoading(false);
       }
     } catch (err) {

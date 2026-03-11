@@ -82,6 +82,7 @@ export default function GlobalDashboard({
       <DashboardStateData
         onSelectProject={onSelectProject}
         onCreateWork={handleCreateWork}
+        refreshKey={refreshKey}
       />
       {showModal && (
         <WorkForm

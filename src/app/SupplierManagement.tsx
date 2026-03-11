@@ -5,7 +5,7 @@
  * Incluye tabla amplia, formularios de creación/edición, y búsqueda
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
@@ -35,6 +35,7 @@ import {
   Search,
   X,
 } from "lucide-react";
+import { proveedoresEndpoint } from "@/app/utils/mockApiService";
 
 export interface Supplier {
   id: string;
@@ -53,59 +54,17 @@ interface SupplierManagementProps {
 }
 
 export default function SupplierManagement({ onBack, viewState = "data" }: SupplierManagementProps) {
-  const [suppliers, setSuppliers] = useState<Supplier[]>(
-    viewState === "empty" ? [] : [
-    {
-      id: "1",
-      proveedor: "CEMEX",
-      razonSocial: "CEMEX México S.A. de C.V.",
-      rfc: "CMX850101ABC",
-      direccion: "Av. Constitución 444, Monterrey, N.L.",
-      vendedor: "Ing. Roberto Martínez",
-      telefono: "(55) 5555-1234",
-      correo: "roberto.martinez@cemex.com",
-    },
-    {
-      id: "2",
-      proveedor: "LEVINSON",
-      razonSocial: "Aceros Levinson S.A. de C.V.",
-      rfc: "ACL920315XYZ",
-      direccion: "Calz. Vallejo 1020, CDMX",
-      vendedor: "Ing. Carlos Pérez",
-      telefono: "(55) 5555-3456",
-      correo: "carlos.perez@levinson.com.mx",
-    },
-    {
-      id: "3",
-      proveedor: "HOME DEPOT",
-      razonSocial: "Homer TLC, Inc.",
-      rfc: "HTL030625MNO",
-      direccion: "Periférico Sur 3720, CDMX",
-      vendedor: "mostrador",
-      telefono: "(55) 5555-7890",
-      correo: "ventas@homedepot.com.mx",
-    },
-    {
-      id: "4",
-      proveedor: "COMEX",
-      razonSocial: "Comex Grupo Comex S.A. de C.V.",
-      rfc: "CGC940815PQR",
-      direccion: "Insurgentes Sur 1605, CDMX",
-      vendedor: "Lic. Ana Rodríguez",
-      telefono: "(55) 5555-4567",
-      correo: "ana.rodriguez@comex.com.mx",
-    },
-    {
-      id: "5",
-      proveedor: "ELEKTRA",
-      razonSocial: "Elektra del Milenio S.A. de C.V.",
-      rfc: "EDM000920STU",
-      direccion: "Av. Insurgentes Norte 3500, CDMX",
-      vendedor: "mostrador",
-      telefono: "(55) 5555-6789",
-      correo: "ventas@elektra.com.mx",
-    },
-  ]);
+  // Estado vacío - los proveedores se crean a través del formulario
+  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
+
+  // Cargar proveedores desde el mock API al montar
+  useEffect(() => {
+    proveedoresEndpoint.getAll().then((res) => {
+      if (res.success) {
+        setSuppliers(res.data as Supplier[]);
+      }
+    });
+  }, []);
 
   const [showForm, setShowForm] = useState(false);
   const [editingSupplier, setEditingSupplier] = useState<Supplier | null>(null);
@@ -150,7 +109,11 @@ export default function SupplierManagement({ onBack, viewState = "data" }: Suppl
 
   const handleDelete = (id: string) => {
     if (confirm("¿Estás seguro de eliminar este proveedor?")) {
-      setSuppliers(suppliers.filter((s) => s.id !== id));
+      proveedoresEndpoint.delete(id).then((res) => {
+        if (res.success) {
+          setSuppliers(suppliers.filter((s) => s.id !== id));
+        }
+      });
     }
   };
 
@@ -159,20 +122,22 @@ export default function SupplierManagement({ onBack, viewState = "data" }: Suppl
     
     if (editingSupplier) {
       // Actualizar proveedor existente
-      setSuppliers(
-        suppliers.map((s) =>
-          s.id === editingSupplier.id
-            ? { ...formData, id: editingSupplier.id }
-            : s
-        )
-      );
+      proveedoresEndpoint.update(editingSupplier.id, formData).then((res) => {
+        if (res.success) {
+          setSuppliers(
+            suppliers.map((s) =>
+              s.id === editingSupplier.id ? { ...formData, id: editingSupplier.id } : s
+            )
+          );
+        }
+      });
     } else {
       // Agregar nuevo proveedor
-      const newSupplier: Supplier = {
-        ...formData,
-        id: Date.now().toString(),
-      };
-      setSuppliers([...suppliers, newSupplier]);
+      proveedoresEndpoint.create(formData).then((res) => {
+        if (res.success && res.data) {
+          setSuppliers([...suppliers, res.data as Supplier]);
+        }
+      });
     }
 
     setShowForm(false);

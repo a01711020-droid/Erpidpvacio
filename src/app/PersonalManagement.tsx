@@ -9,7 +9,7 @@
  * - Registro semanal histórico (52 semanas)
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "./components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
 import { Input } from "./components/ui/input";
@@ -47,6 +47,7 @@ import {
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
 import { Textarea } from "./components/ui/textarea";
+import { personalEndpoint } from "@/app/utils/mockApiService";
 
 // Tipos
 interface Employee {
@@ -130,55 +131,6 @@ const getWeekDates = (year: number, weekNumber: number) => {
   };
 };
 
-// Mock data - Empleados
-const initialEmployees: Employee[] = [
-  {
-    id: "EMP-001",
-    nombre: "Juan Carlos Pérez",
-    puesto: "Maestro Albañil",
-    obraAsignada: "228",
-    nombreObra: "CASTELLO F",
-    salarioDia: 450,
-    diasSemana: 6,
-  },
-  {
-    id: "EMP-002",
-    nombre: "Miguel Ángel Rodríguez",
-    puesto: "Fierrero",
-    obraAsignada: "229",
-    nombreObra: "CASTELLO G",
-    salarioDia: 420,
-    diasSemana: 6,
-  },
-  {
-    id: "EMP-003",
-    nombre: "Roberto Sánchez Torres",
-    puesto: "Peón",
-    obraAsignada: "228",
-    nombreObra: "CASTELLO F",
-    salarioDia: 350,
-    diasSemana: 6,
-  },
-  {
-    id: "EMP-008",
-    nombre: "Ana María González",
-    puesto: "Gerente de Proyecto",
-    obraAsignada: "OFICINA",
-    nombreObra: "OFICINA",
-    salarioDia: 800,
-    diasSemana: 5,
-  },
-  {
-    id: "EMP-010",
-    nombre: "Ricardo Flores Díaz",
-    puesto: "Ingeniero Residente",
-    obraAsignada: "228",
-    nombreObra: "CASTELLO F",
-    salarioDia: 750,
-    diasSemana: 6,
-  },
-];
-
 // Mock data - Destajistas de la semana (viniendo del módulo de Destajos)
 const mockDestajistas: Destajista[] = [
   { inicial: "JP", nombre: "Juan Pérez", importe: 125000 },
@@ -254,22 +206,33 @@ const generateMockWeeklyRecords = (): WeeklyRecord[] => {
 };
 
 export default function PersonalManagement({ onBack, autoOpenAddDialog = false }: PersonalManagementProps) {
-  const [employees, setEmployees] = useState<Employee[]>(initialEmployees);
-  const [weeklyRecords, setWeeklyRecords] = useState<WeeklyRecord[]>(generateMockWeeklyRecords());
+  // Estado vacío - los empleados se agregan a través del formulario
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [weeklyRecords, setWeeklyRecords] = useState<WeeklyRecord[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedObra, setSelectedObra] = useState<string>("ALL");
+  
+  // Cargar empleados desde el mock API al montar
+  useEffect(() => {
+    personalEndpoint.getAll().then((res) => {
+      if (res.success) {
+        setEmployees(res.data as Employee[]);
+        setPersonalWeekRecords(
+          res.data.map((emp: any) => ({
+            empleadoId: emp.id,
+            diasTrabajados: emp.diasSemana,
+          }))
+        );
+      }
+    });
+  }, []);
   
   // Consolidado - Navegación de semanas
   const [semanaActual, setSemanaActual] = useState(7);
   const [añoActual, setAñoActual] = useState(new Date().getFullYear());
   
   // Estado para días trabajados del personal en la semana actual (editable)
-  const [personalWeekRecords, setPersonalWeekRecords] = useState<PersonalWeekRecord[]>(
-    initialEmployees.map(emp => ({
-      empleadoId: emp.id,
-      diasTrabajados: emp.diasSemana, // Por defecto, los días normales
-    }))
-  );
+  const [personalWeekRecords, setPersonalWeekRecords] = useState<PersonalWeekRecord[]>([]);
   
   // Dialog para editar días trabajados
   const [showEditDaysDialog, setShowEditDaysDialog] = useState(false);
@@ -364,8 +327,7 @@ export default function PersonalManagement({ onBack, autoOpenAddDialog = false }
     const obra = OBRAS.find((o) => o.codigo === addForm.obraAsignada);
     if (!obra) return;
 
-    const newEmployee: Employee = {
-      id: `EMP-${String(employees.length + 1).padStart(3, "0")}`,
+    const employeeData = {
       nombre: addForm.nombre,
       puesto: addForm.puesto,
       obraAsignada: addForm.obraAsignada,
@@ -377,17 +339,18 @@ export default function PersonalManagement({ onBack, autoOpenAddDialog = false }
       observaciones: addForm.observaciones,
     };
 
-    setEmployees([...employees, newEmployee]);
-    
-    // Agregar registro de días trabajados para el nuevo empleado
-    setPersonalWeekRecords([
-      ...personalWeekRecords,
-      {
-        empleadoId: newEmployee.id,
-        diasTrabajados: newEmployee.diasSemana,
-      },
-    ]);
-    
+    // Guardar en mock API service
+    personalEndpoint.create(employeeData).then((res) => {
+      if (res.success && res.data) {
+        const newEmployee = res.data as Employee;
+        setEmployees((prev) => [...prev, newEmployee]);
+        setPersonalWeekRecords((prev) => [
+          ...prev,
+          { empleadoId: newEmployee.id, diasTrabajados: newEmployee.diasSemana },
+        ]);
+      }
+    });
+
     setShowAddDialog(false);
     setAddForm({
       nombre: "",

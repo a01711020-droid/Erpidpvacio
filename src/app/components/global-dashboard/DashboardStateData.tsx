@@ -1,54 +1,56 @@
 /**
  * GLOBAL DASHBOARD - Estado Data
- * Muestra el dashboard completo con todas las obras
+ * Carga obras desde el mockApiService (sin datos inline)
  */
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/card";
+import { useState, useEffect } from "react";
+import { Card, CardContent } from "@/app/components/ui/card";
 import { Badge } from "@/app/components/ui/badge";
 import { Button } from "@/app/components/ui/button";
 import {
   Building2,
   TrendingUp,
-  TrendingDown,
   DollarSign,
-  FileText,
-  ShoppingCart,
-  Users,
-  Calendar,
-  MapPin,
   Plus,
-  ArrowRight,
   Archive,
   BarChart3,
 } from "lucide-react";
-import { obrasDashboardMock } from "/spec/dashboard/obras.mock";
-
-// DATOS MOCK COMPLETOS - 6 obras reales (importado desde spec)
-const mockWorks = obrasDashboardMock;
+import { obrasEndpoint, ObraDashboard } from "@/app/utils/mockApiService";
 
 interface DashboardStateDataProps {
   onSelectProject?: (projectId: string) => void;
   onCreateWork?: () => void;
+  refreshKey?: number;
 }
 
 export function DashboardStateData({
   onSelectProject,
   onCreateWork,
+  refreshKey = 0,
 }: DashboardStateDataProps) {
-  const activeWorks = mockWorks;
-  const totalContracts = activeWorks.reduce(
-    (sum, w) => sum + w.contractAmount,
-    0
-  );
+  const [obras, setObras] = useState<ObraDashboard[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    obrasEndpoint.getAll().then((res) => {
+      if (res.success) setObras(res.data);
+      setLoading(false);
+    });
+  }, [refreshKey]);
+
+  const activeWorks = obras.filter((o) => o.status === "Activa");
+  const totalContracts = activeWorks.reduce((sum, w) => sum + w.contractAmount, 0);
   const totalBalance = activeWorks.reduce((sum, w) => sum + w.actualBalance, 0);
-  const totalEstimates = activeWorks.reduce(
-    (sum, w) => sum + w.totalEstimates,
-    0
-  );
-  const totalExpenses = activeWorks.reduce(
-    (sum, w) => sum + w.totalExpenses,
-    0
-  );
+  const totalEstimates = activeWorks.reduce((sum, w) => sum + w.totalEstimates, 0);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-muted-foreground">Cargando obras...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -80,9 +82,7 @@ export function DashboardStateData({
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">
-                    Obras Activas
-                  </p>
+                  <p className="text-sm text-muted-foreground mb-1">Obras Activas</p>
                   <p className="text-3xl font-bold">{activeWorks.length}</p>
                 </div>
                 <div className="p-3 bg-slate-100 rounded-lg">
@@ -96,16 +96,12 @@ export function DashboardStateData({
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">
-                    Contratos Totales
-                  </p>
+                  <p className="text-sm text-muted-foreground mb-1">Contratos Totales</p>
                   <p className="text-3xl font-bold">
-                    $
-                    {(totalContracts / 1000000).toLocaleString("es-MX", {
+                    ${(totalContracts / 1000000).toLocaleString("es-MX", {
                       minimumFractionDigits: 1,
                       maximumFractionDigits: 1,
-                    })}
-                    M
+                    })}M
                   </p>
                 </div>
                 <div className="p-3 bg-blue-100 rounded-lg">
@@ -119,16 +115,12 @@ export function DashboardStateData({
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">
-                    Saldo Global
-                  </p>
+                  <p className="text-sm text-muted-foreground mb-1">Saldo Global</p>
                   <p className="text-3xl font-bold text-green-600">
-                    $
-                    {(totalBalance / 1000000).toLocaleString("es-MX", {
+                    ${(totalBalance / 1000000).toLocaleString("es-MX", {
                       minimumFractionDigits: 1,
                       maximumFractionDigits: 1,
-                    })}
-                    M
+                    })}M
                   </p>
                 </div>
                 <div className="p-3 bg-green-100 rounded-lg">
@@ -142,11 +134,11 @@ export function DashboardStateData({
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">
-                    Avance Global
-                  </p>
+                  <p className="text-sm text-muted-foreground mb-1">Avance Global</p>
                   <p className="text-3xl font-bold">
-                    {((totalEstimates / totalContracts) * 100).toFixed(0)}%
+                    {totalContracts > 0
+                      ? ((totalEstimates / totalContracts) * 100).toFixed(0)
+                      : "0"}%
                   </p>
                 </div>
                 <div className="p-3 bg-purple-100 rounded-lg">
@@ -168,108 +160,88 @@ export function DashboardStateData({
               </Button>
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b-2 bg-gray-50">
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">
-                      Código
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">
-                      Nombre de la Obra
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">
-                      Residente
-                    </th>
-                    <th className="px-4 py-3 text-right text-xs font-semibold text-gray-600">
-                      Contrato
-                    </th>
-                    <th className="px-4 py-3 text-right text-xs font-semibold text-gray-600">
-                      Saldo
-                    </th>
-                    <th className="px-4 py-3 text-center text-xs font-semibold text-gray-600">
-                      Avance
-                    </th>
-                    <th className="px-4 py-3 text-center text-xs font-semibold text-gray-600">
-                      Estado
-                    </th>
-                    <th className="px-4 py-3 text-center text-xs font-semibold text-gray-600">
-                      Acciones
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y">
-                  {activeWorks.map((work) => {
-                    const progress =
-                      (work.totalEstimates / work.contractAmount) * 100;
-                    return (
-                      <tr key={work.code} className="hover:bg-gray-50">
-                        <td className="px-4 py-3">
-                          <span className="font-mono font-semibold">
-                            {work.code}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3">
-                          <div>
-                            <div className="font-medium">{work.name}</div>
-                            <div className="text-xs text-muted-foreground">
-                              {work.client}
+            {obras.length === 0 ? (
+              <div className="text-center py-16 text-muted-foreground">
+                <Building2 className="h-12 w-12 mx-auto mb-3 opacity-30" />
+                <p className="text-lg font-medium">No hay obras registradas</p>
+                <p className="text-sm mt-1">Crea tu primera obra usando el botón "Nueva Obra"</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b-2 bg-gray-50">
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Código</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Nombre de la Obra</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Residente</th>
+                      <th className="px-4 py-3 text-right text-xs font-semibold text-gray-600">Contrato</th>
+                      <th className="px-4 py-3 text-right text-xs font-semibold text-gray-600">Saldo</th>
+                      <th className="px-4 py-3 text-center text-xs font-semibold text-gray-600">Avance</th>
+                      <th className="px-4 py-3 text-center text-xs font-semibold text-gray-600">Estado</th>
+                      <th className="px-4 py-3 text-center text-xs font-semibold text-gray-600">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y">
+                    {activeWorks.map((work) => {
+                      const progress =
+                        work.contractAmount > 0
+                          ? (work.totalEstimates / work.contractAmount) * 100
+                          : 0;
+                      return (
+                        <tr key={work.code} className="hover:bg-gray-50">
+                          <td className="px-4 py-3">
+                            <span className="font-mono font-semibold">{work.code}</span>
+                          </td>
+                          <td className="px-4 py-3">
+                            <div>
+                              <div className="font-medium">{work.name}</div>
+                              <div className="text-xs text-muted-foreground">{work.client}</div>
                             </div>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 text-sm">{work.resident}</td>
-                        <td className="px-4 py-3 text-right font-semibold">
-                          $
-                          {work.contractAmount.toLocaleString("es-MX", {
-                            minimumFractionDigits: 0,
-                          })}
-                        </td>
-                        <td className="px-4 py-3 text-right font-semibold text-green-600">
-                          $
-                          {work.actualBalance.toLocaleString("es-MX", {
-                            minimumFractionDigits: 0,
-                          })}
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="flex items-center justify-center gap-2">
-                            <div className="w-20 bg-gray-200 rounded-full h-2">
-                              <div
-                                className="bg-blue-600 h-2 rounded-full"
-                                style={{ width: `${progress}%` }}
-                              />
+                          </td>
+                          <td className="px-4 py-3 text-sm">{work.resident}</td>
+                          <td className="px-4 py-3 text-right font-semibold">
+                            ${work.contractAmount.toLocaleString("es-MX", { minimumFractionDigits: 0 })}
+                          </td>
+                          <td className="px-4 py-3 text-right font-semibold text-green-600">
+                            ${work.actualBalance.toLocaleString("es-MX", { minimumFractionDigits: 0 })}
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="flex items-center justify-center gap-2">
+                              <div className="w-20 bg-gray-200 rounded-full h-2">
+                                <div
+                                  className="bg-blue-600 h-2 rounded-full"
+                                  style={{ width: `${Math.min(progress, 100)}%` }}
+                                />
+                              </div>
+                              <span className="text-xs font-semibold">{progress.toFixed(0)}%</span>
                             </div>
-                            <span className="text-xs font-semibold">
-                              {progress.toFixed(0)}%
-                            </span>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 text-center">
-                          <Badge
-                            variant="outline"
-                            className="bg-green-50 text-green-700 border-green-300"
-                          >
-                            {work.status}
-                          </Badge>
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="flex justify-center gap-2">
-                            <Button
-                              size="sm"
+                          </td>
+                          <td className="px-4 py-3 text-center">
+                            <Badge
                               variant="outline"
-                              onClick={() =>
-                                onSelectProject && onSelectProject(work.code)
-                              }
+                              className="bg-green-50 text-green-700 border-green-300"
                             >
-                              Ver
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+                              {work.status}
+                            </Badge>
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="flex justify-center gap-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => onSelectProject && onSelectProject(work.code)}
+                              >
+                                Ver
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

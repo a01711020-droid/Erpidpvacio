@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/app/components/ui/card";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
@@ -19,6 +19,7 @@ import {
   DialogTitle,
 } from "@/app/components/ui/dialog";
 import { ArrowLeft, Plus, Trash2, AlertCircle, Users } from "lucide-react";
+import { destajistasEndpoint } from "@/app/utils/mockApiService";
 
 interface Destajista {
   id: string;
@@ -75,40 +76,17 @@ const especialidades = [
 ];
 
 export default function DestajistasManagement({ onBack, autoOpenForm = false }: Props) {
-  const [destajistas, setDestajistas] = useState<Destajista[]>([
-    { id: "1", nombre: "Abraham Garcia", iniciales: "AG", color: "#b91c1c", especialidad: "Fierrero", telefono: "" },
-    { id: "2", nombre: "Angel Rangel", iniciales: "AR", color: "#1e40af", especialidad: "Bloquero", telefono: "" },
-    { id: "3", nombre: "Arturo Carmona", iniciales: "AC", color: "#15803d", especialidad: "Yesero", telefono: "" },
-    { id: "4", nombre: "Bacilio Ortiz", iniciales: "BO", color: "#a21caf", especialidad: "Fierrero", telefono: "" },
-    { id: "5", nombre: "Benito Garcia", iniciales: "BG", color: "#c2410c", especialidad: "Bloquero", telefono: "" },
-    { id: "6", nombre: "Edwin Medina", iniciales: "EMR", color: "#0891b2", especialidad: "Instalaciones", telefono: "" },
-    { id: "7", nombre: "Eleazar Leon", iniciales: "EL", color: "#4f46e5", especialidad: "Yesero", telefono: "" },
-    { id: "8", nombre: "Emanuel Martinez", iniciales: "EM", color: "#be123c", especialidad: "Fierrero", telefono: "" },
-    { id: "9", nombre: "Fabian Rodriguez", iniciales: "FR", color: "#0d9488", especialidad: "Bloquero", telefono: "" },
-    { id: "10", nombre: "Facundo Bautista", iniciales: "FB", color: "#7c3aed", especialidad: "Yesero", telefono: "" },
-    { id: "11", nombre: "Fernando Sanchez", iniciales: "FS", color: "#dc2626", especialidad: "Fierrero", telefono: "" },
-    { id: "12", nombre: "Fidel Tinajero", iniciales: "FT", color: "#2563eb", especialidad: "Instalaciones", telefono: "" },
-    { id: "13", nombre: "Francisco Martínez", iniciales: "FM", color: "#16a34a", especialidad: "Bloquero", telefono: "" },
-    { id: "14", nombre: "Francisco Valencia", iniciales: "FV", color: "#9333ea", especialidad: "Yesero", telefono: "" },
-    { id: "15", nombre: "IDP", iniciales: "IDP", color: "#334155", especialidad: "Albañil General", telefono: "" },
-    { id: "16", nombre: "Juan Briones", iniciales: "JB", color: "#ea580c", especialidad: "Fierrero", telefono: "" },
-    { id: "17", nombre: "Laura Juarez", iniciales: "LJ", color: "#0284c7", especialidad: "Acabados", telefono: "" },
-    { id: "18", nombre: "Marco Angeles", iniciales: "MA", color: "#059669", especialidad: "Bloquero", telefono: "" },
-    { id: "19", nombre: "Miguel Lopez", iniciales: "ML", color: "#7c2d12", especialidad: "Yesero", telefono: "" },
-    { id: "20", nombre: "Octaviano Sandoval", iniciales: "OS", color: "#1e3a8a", especialidad: "Fierrero", telefono: "" },
-    { id: "21", nombre: "Oscar Rizo", iniciales: "OR", color: "#14532d", especialidad: "Instalaciones", telefono: "" },
-    { id: "22", nombre: "Oscar Suarez", iniciales: "OSU", color: "#86198f", especialidad: "Bloquero", telefono: "" },
-    { id: "23", nombre: "Remedios Bautista", iniciales: "RB", color: "#be185d", especialidad: "Acabados", telefono: "" },
-    { id: "24", nombre: "Roberto Flores", iniciales: "RF", color: "#0369a1", especialidad: "Yesero", telefono: "" },
-    { id: "25", nombre: "Roberto Ortiz Sanchez", iniciales: "RO", color: "#047857", especialidad: "Fierrero", telefono: "" },
-    { id: "26", nombre: "Roberto Reyes", iniciales: "RR", color: "#b45309", especialidad: "Bloquero", telefono: "" },
-    { id: "27", nombre: "Samuel Chico", iniciales: "SC", color: "#6366f1", especialidad: "Instalaciones", telefono: "" },
-    { id: "28", nombre: "Severo Luciano", iniciales: "SL", color: "#ca8a04", especialidad: "Yesero", telefono: "" },
-    { id: "29", nombre: "Benjamin Juarez", iniciales: "BJ", color: "#0e7490", especialidad: "Fierrero", telefono: "" },
-    { id: "30", nombre: "Ricardo de Alba", iniciales: "RA", color: "#991b1b", especialidad: "Bloquero", telefono: "" },
-    { id: "31", nombre: "Ronaldo Martinez", iniciales: "RM", color: "#166534", especialidad: "Acabados", telefono: "" },
-    { id: "32", nombre: "Isidro Garcia", iniciales: "IG", color: "#7e22ce", especialidad: "Yesero", telefono: "" },
-  ]);
+  // Estado vacío - los destajistas se crean a través del formulario
+  const [destajistas, setDestajistas] = useState<Destajista[]>([]);
+
+  // Cargar destajistas desde el mock API al montar
+  useEffect(() => {
+    destajistasEndpoint.getAll().then((res) => {
+      if (res.success) {
+        setDestajistas(res.data as Destajista[]);
+      }
+    });
+  }, []);
 
   // Form states — if autoOpenForm, start open
   const [showForm, setShowForm] = useState(autoOpenForm);
@@ -158,8 +136,7 @@ export default function DestajistasManagement({ onBack, autoOpenForm = false }: 
   const handleSave = () => {
     if (!destajistaName || !destajistaIniciales || !destajistaEspecialidad || inicialesConflict) return;
 
-    const newDestajista: Destajista = {
-      id: Date.now().toString(),
+    const newData = {
       nombre: destajistaName,
       iniciales: destajistaIniciales,
       color: destajistaColor,
@@ -167,12 +144,22 @@ export default function DestajistasManagement({ onBack, autoOpenForm = false }: 
       telefono: destajistaTelefono,
     };
 
-    setDestajistas([...destajistas, newDestajista]);
+    // Guardar en mock API service
+    destajistasEndpoint.create(newData).then((res) => {
+      if (res.success && res.data) {
+        setDestajistas((prev) => [...prev, res.data as Destajista]);
+      }
+    });
+
     setShowForm(false);
   };
 
   const handleDelete = (id: string) => {
-    setDestajistas(destajistas.filter((d) => d.id !== id));
+    destajistasEndpoint.delete(id).then((res) => {
+      if (res.success) {
+        setDestajistas(destajistas.filter((d) => d.id !== id));
+      }
+    });
   };
 
   return (
