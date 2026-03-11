@@ -134,6 +134,13 @@ export const avancesApi = {
   delete: (avanceId: string) => apiRequest(`/api/avances/${avanceId}`, 'DELETE'),
 };
 
+// ==================== API: RESUMEN DESTAJOS ====================
+
+export const resumenDestajosApi = {
+  getAvailableWeeks: () => apiRequest('/api/resumen-destajos/semanas', 'GET'),
+  getByWeek: (weekKey: string) => apiRequest(`/api/resumen-destajos/${weekKey}`, 'GET'),
+};
+
 // ==================== API: REQUISICIONES ====================
 
 export const requisicionesApi = {

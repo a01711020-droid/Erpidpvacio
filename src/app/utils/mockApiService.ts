@@ -62,6 +62,12 @@ export interface Proveedor {
   correo: string;
 }
 
+export interface DestajoResumenItem {
+  inicial: string;
+  destajista: string;
+  totalImporte: number;
+}
+
 // ==================== STORE EN MEMORIA ====================
 
 // Las obras se inicializan con datos de producción (mock de dashboard)
@@ -176,11 +182,53 @@ const store: {
   personal: PersonalEmployee[];
   destajistas: Destajista[];
   proveedores: Proveedor[];
+  resumenDestajosBySemana: Record<string, DestajoResumenItem[]>;
 } = {
   obras: [...initialObras],
   personal: [],        // VACÍO - el usuario agrega
   destajistas: [],     // VACÍO - el usuario agrega
   proveedores: [],     // VACÍO - el usuario agrega
+  resumenDestajosBySemana: {
+    "2024-S01": [
+      { inicial: "CFU", destajista: "Fidel Tinajero", totalImporte: 4200.0 },
+      { inicial: "JN", destajista: "Jose Nava", totalImporte: 2000.0 },
+      { inicial: "RB", destajista: "Remedios Bautista", totalImporte: 5400.0 },
+      { inicial: "SL", destajista: "Severo Luciano", totalImporte: 6450.0 },
+    ],
+    "2024-S02": [
+      { inicial: "CFU", destajista: "Fidel Tinajero", totalImporte: 4500.0 },
+      { inicial: "RB", destajista: "Remedios Bautista", totalImporte: 5100.0 },
+      { inicial: "SL", destajista: "Severo Luciano", totalImporte: 6200.0 },
+      { inicial: "MA", destajista: "Miguel Alvarez", totalImporte: 3800.0 },
+    ],
+    "2024-S03": [
+      { inicial: "CFU", destajista: "Fidel Tinajero", totalImporte: 4800.0 },
+      { inicial: "JN", destajista: "Jose Nava", totalImporte: 2500.0 },
+      { inicial: "RB", destajista: "Remedios Bautista", totalImporte: 5600.0 },
+      { inicial: "SL", destajista: "Severo Luciano", totalImporte: 6800.0 },
+      { inicial: "MA", destajista: "Miguel Alvarez", totalImporte: 4100.0 },
+    ],
+    "2024-S04": [
+      { inicial: "CFU", destajista: "Fidel Tinajero", totalImporte: 5000.0 },
+      { inicial: "RB", destajista: "Remedios Bautista", totalImporte: 5800.0 },
+      { inicial: "SL", destajista: "Severo Luciano", totalImporte: 7000.0 },
+    ],
+  },
+};
+
+// ==================== API: RESUMEN DESTAJOS ====================
+
+export const resumenDestajosEndpoint = {
+  getAvailableWeeks: async (): Promise<{ success: boolean; data: string[] }> => {
+    await delay(50);
+    const weeks = Object.keys(store.resumenDestajosBySemana).sort();
+    return { success: true, data: weeks };
+  },
+
+  getByWeek: async (weekKey: string): Promise<{ success: boolean; data: DestajoResumenItem[] }> => {
+    await delay(50);
+    return { success: true, data: [...(store.resumenDestajosBySemana[weekKey] || [])] };
+  },
 };
 
 // ==================== API: OBRAS ====================

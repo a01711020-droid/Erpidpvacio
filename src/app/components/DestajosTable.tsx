@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Table,
   TableBody,
@@ -15,44 +15,42 @@ import {
   SelectValue,
 } from "./ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { resumenDestajosEndpoint, type DestajoResumenItem } from "@/app/utils/mockApiService";
 
-interface DestajoItem {
-  inicial: string;
-  destajista: string;
-  totalImporte: number;
+function formatWeekLabel(weekKey: string): string {
+  const [year, week] = weekKey.split("-S");
+  if (!year || !week) return weekKey;
+  return `Semana ${Number(week)} - ${year}`;
 }
 
-const mockDataBySemana: Record<string, DestajoItem[]> = {
-  "2024-S01": [
-    { inicial: "CFU", destajista: "Fidel Tinajero", totalImporte: 4200.0 },
-    { inicial: "JN", destajista: "Jose Nava", totalImporte: 2000.0 },
-    { inicial: "RB", destajista: "Remedios Bautista", totalImporte: 5400.0 },
-    { inicial: "SL", destajista: "Severo Luciano", totalImporte: 6450.0 },
-  ],
-  "2024-S02": [
-    { inicial: "CFU", destajista: "Fidel Tinajero", totalImporte: 4500.0 },
-    { inicial: "RB", destajista: "Remedios Bautista", totalImporte: 5100.0 },
-    { inicial: "SL", destajista: "Severo Luciano", totalImporte: 6200.0 },
-    { inicial: "MA", destajista: "Miguel Alvarez", totalImporte: 3800.0 },
-  ],
-  "2024-S03": [
-    { inicial: "CFU", destajista: "Fidel Tinajero", totalImporte: 4800.0 },
-    { inicial: "JN", destajista: "Jose Nava", totalImporte: 2500.0 },
-    { inicial: "RB", destajista: "Remedios Bautista", totalImporte: 5600.0 },
-    { inicial: "SL", destajista: "Severo Luciano", totalImporte: 6800.0 },
-    { inicial: "MA", destajista: "Miguel Alvarez", totalImporte: 4100.0 },
-  ],
-  "2024-S04": [
-    { inicial: "CFU", destajista: "Fidel Tinajero", totalImporte: 5000.0 },
-    { inicial: "RB", destajista: "Remedios Bautista", totalImporte: 5800.0 },
-    { inicial: "SL", destajista: "Severo Luciano", totalImporte: 7000.0 },
-  ],
-};
-
 export function DestajosTable() {
-  const [selectedWeek, setSelectedWeek] = useState<string>("2024-S01");
+  const [selectedWeek, setSelectedWeek] = useState<string>("");
+  const [availableWeeks, setAvailableWeeks] = useState<string[]>([]);
+  const [currentData, setCurrentData] = useState<DestajoResumenItem[]>([]);
 
-  const currentData = mockDataBySemana[selectedWeek] || [];
+  useEffect(() => {
+    const loadWeeks = async () => {
+      const response = await resumenDestajosEndpoint.getAvailableWeeks();
+      const weeks = response.data;
+      setAvailableWeeks(weeks);
+      if (!selectedWeek && weeks.length > 0) {
+        setSelectedWeek(weeks[0]);
+      }
+    };
+
+    void loadWeeks();
+  }, [selectedWeek]);
+
+  useEffect(() => {
+    if (!selectedWeek) return;
+
+    const loadWeekData = async () => {
+      const response = await resumenDestajosEndpoint.getByWeek(selectedWeek);
+      setCurrentData(response.data);
+    };
+
+    void loadWeekData();
+  }, [selectedWeek]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("es-MX", {
@@ -61,10 +59,9 @@ export function DestajosTable() {
     }).format(amount);
   };
 
-  const totalImporte = currentData.reduce(
-    (sum, item) => sum + item.totalImporte,
-    0
-  );
+  const totalImporte = useMemo(() => {
+    return currentData.reduce((sum, item) => sum + item.totalImporte, 0);
+  }, [currentData]);
 
   return (
     <Card>
@@ -75,17 +72,14 @@ export function DestajosTable() {
             <span className="text-sm text-muted-foreground">Semana</span>
             <Select value={selectedWeek} onValueChange={setSelectedWeek}>
               <SelectTrigger className="w-[180px]">
-                <SelectValue />
+                <SelectValue placeholder="Selecciona semana" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="2024-S01">Semana 1 - 2024</SelectItem>
-                <SelectItem value="2024-S02">Semana 2 - 2024</SelectItem>
-                <SelectItem value="2024-S03">Semana 3 - 2024</SelectItem>
-                <SelectItem value="2024-S04">Semana 4 - 2024</SelectItem>
-                <SelectItem value="2024-S05">Semana 5 - 2024</SelectItem>
-                <SelectItem value="2024-S06">Semana 6 - 2024</SelectItem>
-                <SelectItem value="2024-S07">Semana 7 - 2024</SelectItem>
-                <SelectItem value="2024-S08">Semana 8 - 2024</SelectItem>
+                {availableWeeks.map((weekKey) => (
+                  <SelectItem key={weekKey} value={weekKey}>
+                    {formatWeekLabel(weekKey)}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
